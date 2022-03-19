@@ -1,39 +1,22 @@
-// index.js
-// const { fetchCoordsByIP } = require('./iss');
+const { nextISSTimesForMyLocation } = require('./iss');
 
-// fetchCoordsByIP((error, ip) => {
-//   if (error) {
-//     console.log("It didn't work!" , error);
-//     return;
-//   }
+const printPassTimes = (passTimes)=>{
+  passTimes.forEach((value)=>{
+    //Fri Jun 01 2021 13:01:35 GMT-0700 (Pacific Daylight Time)
+    const time = new Date(0);
+    time.setUTCSeconds(value.risetime);
+    const duration = value.duration;
 
-//   console.log('It worked! Returned IP:' , ip);
-//   fetchCoordsByIP(ip);
-// });
-
-const { fetchCoordsByIP, fetchMyIP, fetchISSFlyOverTimes } = require('./iss');
-
-let ipAddress = '';
-fetchMyIP((error, value)=> ipAddress = value);
-
-fetchCoordsByIP(ipAddress, (error, coordinates) => {
-  if (error) {
-    console.log("It didn't work!" , error);
-    return;
-  }
-
-  console.log('It worked! Returned coordinates:' , coordinates);
-  
-  fetchISSFlyOverTimes(coordinates, (error, response)=>{
-    if (error) {
-      console.log("It didn't work!" , error);
-      return;
-    }
-
+    const response = `Next pass at ${time} for ${duration} seconds!`;
     console.log(response);
-    return response;
-
+  
   });
+};
+
+nextISSTimesForMyLocation((error, passTimes) => {
+  if (error) {
+    return console.log("It didn't work!", error);
+  }
+  // calls the parrent function imported from iss using each value passed in.
+  printPassTimes(passTimes);
 });
-
-
